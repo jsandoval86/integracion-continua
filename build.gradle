@@ -1,10 +1,36 @@
-allprojects {
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'jacoco'
 
-	repositories {
-		mavenCentral()		
-	}
-	
-	project.ext.junit = ['junit:junit:4.12']  	
-	project.ext.mockito = ['org.mockito:mockito-all:1.10.19']
-	project.ext.log4j = ['log4j:log4j:1.2.17']
+version = '1.0'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'gradle',
+                   'Implementation-Version': version
+    }
 }
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.10.0'
+}
+
+test {
+    jacoco{
+		append = false
+		destinationFile = file("jacoco/jacocoTest.exec")
+    }
+    reports.junitXml.destination = file("jacoco/test-results")
+}
+
+jacocoTestReport.dependsOn(test)
